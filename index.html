@@ -1,139 +1,238 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
-        <title>Mocking Spongebob Squarepants Text Generator</title>
-        <style type="text/css">
-textarea {
-    display:block;
-    width:400px;
-    height:10em;
-    margin:1em
-}
-#clipboard-success {
-    display:none;
-    font-weight:strong
-}
-#dl-btn {
-    display:block;
-    margin:1em 0px
-}
-#rows {
-    display:flex;
-    flex-direction:row;
-    flex-wrap:wrap
-}
-#rows > * {
-    margin-right:20px
-}
-        </style>
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+		<title>Mocking Spongebob Squarepants Text Generator</title>
+		<style type="text/css">
+			body {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				font-family: "Roboto", sans-serif;
+				background-color: #333;
+				color: rgba(255, 255, 255, 0.76);
+			}
 
-        <link href="https://fonts.googleapis.com/css?family=Anton&amp;subset=latin-ext"
-              rel="stylesheet">
+			h1 {
+				text-align: center;
+				color: #f8fd23;
+			}
 
-    </head>
-    <body>
-        <h1>MoCking sPOngEbOb sqUArepAnTs TexT gENeraTOR</h1>
-        <small>by <a
-                href="https://www.twitter.com/cemerick">@cemerick</a></small>
+			a {
+				color: #f8fd23;
+				text-decoration: none;
+			}
 
-        <div id="rows">
-            <div>
-                <h3>Type / paste your text here</h3>
-                <textarea id="in"></textarea>
+			small {
+				font-size: 16px;
+			}
 
-                <h3>Click your mocking text below to copy to your clipboard</h3>
-                <p id="clipboard-success">Copied, now paste into twitter/facebook/etc!</p>
-                <textarea id="out" readonly="true"></textarea>
-            </div>
-            <div>
-                <h3>Download/share your image</h3>
-                <a href="#" download="stoP-THAt-RiGHT-nOW.jpg" id="dl-btn">
-                    Download / Share Image
-                </a>
-                <canvas id="canvas"></canvas>
-            </div>
-        </div>
+			small a {
+				box-shadow: inset 0 -3px 0 #9123fc;
+				transition: all 0.3s ease-in-out;
+			}
 
-        <script language="javascript">
-var input = document.getElementById("in");
-var output = document.getElementById("out");
-var img = new Image();
-var width = 583;
-var height = 411;
-var center = width / 2;
-var lineWidth = 2.5;
-var fontSize = 42;
+			small a:hover {
+				box-shadow: inset 0 -55px 0 #9123fc;
+			}
 
-function tweak (c) {
-    return Math.random() < 0.5 ? c.toLowerCase() : c.toUpperCase();
-}
+			#rows {
+				display: flex;
+				flex-flow: column wrap;
+				align-items: center;
+				justify-content: center;
+			}
 
-function mock (text) {
-    ctx.drawImage(img, 0, 0);
-    ctx.font = fontSize + "px Anton";
-    ctx.lineWidth = lineWidth;
+			#textareas {
+				display: flex;
+				flex-flow: row wrap;
+				align-items: center;
+				justify-content: center;
+			}
+			@media screen and (min-width: 975px) {
+				#textareas {
+					width: 955px;
+					justify-content: space-between;
+				}
+			}
 
-    text = output.value = text.split("").map(tweak).join("");
+			textarea {
+				width: 465px;
+				height: 130px;
+				resize: none;
 
-    var m = text.match(/([^\n]+(?:\n[^\n]+)*)?(\n(?:\n[^\n]+)*)?/);
-    var top = m[1] ? m[1] : "";
-    var bottom = m[2] ? m[2] : "";
+				background-color: rgba(255, 255, 255, 0.76);
+				caret-color: #f8fd23;
+				font-size: 1.3vw;
+			}
 
-    top.split("\n").map(function (line, lineno) {
-        // top margin + number of lines * char height incl. padding
-        var yoffset = 5 + ((1 + lineno) * (fontSize * 1.1));
-        ctx.fillText(line, center, yoffset, width - 10);
-        ctx.strokeText(line, center, yoffset, width - 10);
-    });
-    bottom.split("\n").reverse().map(function (line, lineno) {
-        var yoffset = height - 10 - (lineno * (fontSize * 1.1));
-        ctx.fillText(line, center, yoffset, width - 10);
-        ctx.strokeText(line, center, yoffset, width - 10);
-    });
-}
+			#text-input,
+			#text-output {
+				display: flex;
+				flex-direction: column;
+			}
 
-document.getElementById("dl-btn").addEventListener("click", function (e) {
-    e.target.href = canvas.toDataURL("image/jpg");
-});
+			#image-output {
+				display: flex;
+				flex-flow: column wrap;
+				align-items: center;
+				margin-top: 10px;
+			}
 
-var canvas = document.getElementById("canvas");
-canvas.setAttribute("height", height);
-canvas.setAttribute("width", width);
-var ctx = canvas.getContext('2d');
-ctx.fillStyle = "#FFF";
-ctx.strokeStyle = "#000";
-ctx.textAlign = "center";
-img.src = "meme.jpg";
-img.addEventListener("load", function (e) {
-    mock("");
-});
+			#image-output a {
+				padding: 10px;
+				box-shadow: inset 0 -3px 0 #9123fc, inset 0 3px 0 #9123fc, inset 3px 0 0 #9123fc,
+					inset -3px 0 0 #9123fc;
+				transition: all 0.3s ease-in-out;
+			}
 
-function clipboard () {
-    output.select(); 
-    try {
-        if (document.execCommand('copy')) {
-            document.getElementById("clipboard-success").style.display = "block";
-            setTimeout(function () {
-                document.getElementById("clipboard-success").style.display = "none";
-            }, 3000)
-            return true;
-        }
-    } catch (e) {}
-}
+			#image-output a:hover {
+				background-color: #9123fc;
+			}
 
-input.addEventListener('keyup', function (e) { mock(e.target.value); });
-output.addEventListener('click', clipboard);
-        </script>
-        <script>
-(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+			#canvas {
+				margin-top: 10px;
+			}
+		</style>
 
-ga('create', 'UA-100848400-1', 'auto');
-ga('send', 'pageview');
-        </script>
-    </body>
+		<!--link href="https://fonts.googleapis.com/css?family=Anton&amp;subset=latin-ext" rel="stylesheet" /-->
+		<link href="https://fonts.googleapis.com/css?family=Comic+Neue&amp;subset=latin-ext" rel="stylesheet" />
+		
+	</head>
+	<body>
+		<h1>MoCking sPOngEbOb sqUArepAnTs TexT gENeraTOR</h1>
+		<small>
+			by
+			<a target="_blank" rel="noopener noreferrer" href="https://www.twitter.com/cemerick">
+				@cemerick</a
+			>
+			and
+			<a target="_blank" rel="noopener noreferrer" href="https://github.com/avikola">avikola</a>
+			and
+			<a target="_blank" rel="noopener noreferrer" href="https://github.com/avikola">your mom</a>
+		</small>
+
+		<div id="rows">
+			<div id="textareas">
+				<div id="text-input">
+					<h3>Enter Text Here</h3>
+					<textarea id="in"></textarea>
+				</div>
+				<div id="text-output">
+					<h3 id="clip-success">
+						Click Text Below to Copy to Clipboard
+					</h3>
+					<textarea id="out" readonly="true"></textarea>
+				</div>
+			</div>
+			<div id="image-output">
+				<a href="#" download="stoP-THAt-RiGHT-nOW.jpg" id="dl-btn">
+					Download Image
+				</a>
+				<canvas id="canvas"></canvas>
+			</div>
+		</div>
+
+		<script language="javascript">
+			var input = document.getElementById("in")
+			var output = document.getElementById("out")
+			var img = new Image()
+			var width = 583
+			var height = 411
+			var center = width / 2
+			var lineWidth = 2.0
+			var fontSize = 42
+
+			function tweak(c) {
+				return Math.random() < 0.5 ? c.toLowerCase() : c.toUpperCase()
+			}
+
+			function mock(text) {
+				ctx.drawImage(img, 0, 0)
+				ctx.font = fontSize + "px Comic Neue"
+				ctx.lineWidth = lineWidth
+
+				text = output.value = text
+					.split("")
+					.map(tweak)
+					.join("")
+
+				var m = text.match(/([^\n]+(?:\n[^\n]+)*)?(\n(?:\n[^\n]+)*)?/)
+				var top = m[1] ? m[1] : ""
+				var bottom = m[2] ? m[2] : ""
+
+				top.split("\n").map(function(line, lineno) {
+					// top margin + number of lines * char height incl. padding
+					var yoffset = 5 + (1 + lineno) * (fontSize * 1.1)
+					ctx.fillText(line, center, yoffset, width - 10)
+					ctx.strokeText(line, center, yoffset, width - 10)
+				})
+				bottom.split("\n")
+					.reverse()
+					.map(function(line, lineno) {
+						var yoffset = height - 10 - lineno * (fontSize * 1.1)
+						ctx.fillText(line, center, yoffset, width - 10)
+						ctx.strokeText(line, center, yoffset, width - 10)
+					})
+			}
+
+			document.getElementById("dl-btn").addEventListener("click", function(e) {
+				e.target.href = canvas.toDataURL("image/jpg")
+			})
+
+			var canvas = document.getElementById("canvas")
+			canvas.setAttribute("height", height)
+			canvas.setAttribute("width", width)
+			var ctx = canvas.getContext("2d")
+			ctx.fillStyle = "#FFF"
+			ctx.strokeStyle = "#000"
+			ctx.textAlign = "center"
+			img.src = "meme.jpg"
+			img.addEventListener("load", function(e) {
+				mock("")
+			})
+
+			function clipboard() {
+				output.select()
+				try {
+					if (document.execCommand("copy")) {
+						document.getElementById("clip-success").textContent =
+							"CoPiED tExT tO cLiPbOaRd"
+						document.getElementById("clip-success").style.color = "limegreen"
+						setTimeout(function() {
+							document.getElementById("clip-success").textContent =
+								"Click Text Below to Copy to Clipboard"
+							document.getElementById("clip-success").style.color =
+								"rgba(255, 255, 255, 0.76)"
+						}, 3000)
+						return true
+					}
+				} catch (e) {}
+			}
+
+			input.addEventListener("keyup", function(e) {
+				mock(e.target.value)
+			})
+			output.addEventListener("click", clipboard)
+		</script>
+		<script>
+			;(function(i, s, o, g, r, a, m) {
+				i["GoogleAnalyticsObject"] = r
+				;(i[r] =
+					i[r] ||
+					function() {
+						;(i[r].q = i[r].q || []).push(arguments)
+					}),
+					(i[r].l = 1 * new Date())
+				;(a = s.createElement(o)), (m = s.getElementsByTagName(o)[0])
+				a.async = 1
+				a.src = g
+				m.parentNode.insertBefore(a, m)
+			})(window, document, "script", "https://www.google-analytics.com/analytics.js", "ga")
+
+			ga("create", "UA-100848400-1", "auto")
+			ga("send", "pageview")
+		</script>
+	</body>
 </html>
